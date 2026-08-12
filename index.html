@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Field Marks | AppADay 097</title>
+<meta name="description" content="Photograph a bird, animal, insect, or plant and get a structured field identification: diagnostic marks, look-alikes, hazards, invasive status, and plant health notes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#151d1a;
+    --ground-2:#1c2724;
+    --ground-3:#243230;
+    --rule:#384944;
+    --bone:#eae4d6;
+    --bone-2:#ded6c4;
+    --ink:#1d2420;
+    --ink-soft:#4c574f;
+    --ochre:#b5842f;
+    --ochre-lt:#d9a94b;
+    --moss:#7fae8d;
+    --caution:#c8952b;
+    --harmful:#d2622c;
+    --danger:#b02a26;
+    --shadow:0 18px 40px rgba(0,0,0,.45);
+    --disp:"Newsreader",Georgia,serif;
+    --body:"Karla",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;min-height:100dvh;display:flex;flex-direction:column;overflow-wrap:break-word;
+    background:
+      radial-gradient(120% 80% at 50% -10%, #1f2c28 0%, rgba(31,44,40,0) 60%),
+      var(--ground);
+    color:var(--bone);font-family:var(--body);font-size:16px;line-height:1.5;
+  }
+  a{color:var(--ochre-lt)}
+  button{font-family:inherit;font-size:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--ochre-lt);outline-offset:2px}
+
+  /* ---------- chrome ---------- */
+  header.bar{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:14px 18px;border-bottom:1px solid var(--rule);
+    background:rgba(21,29,26,.9);position:sticky;top:0;z-index:20;
+    backdrop-filter:blur(6px);
+  }
+  .brandnum{
+    font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--ochre);
+    border:1px solid var(--ochre);border-radius:3px;padding:3px 7px;
+  }
+  .brandname{font-family:var(--disp);font-size:21px;font-weight:600;letter-spacing:.01em}
+  .bar .spacer{flex:1}
+  .bar a.home{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--moss);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;
+  }
+  .bar a.home:hover{border-bottom-color:var(--moss)}
+  .iconbtn{
+    background:transparent;border:1px solid var(--rule);border-radius:4px;
+    width:34px;height:34px;display:grid;place-items:center;color:var(--bone);
+  }
+  .iconbtn:hover{border-color:var(--ochre);color:var(--ochre-lt)}
+
+  main{flex:1;width:100%;max-width:940px;margin:0 auto;padding:22px 16px 40px}
+
+  /* ---------- intake ---------- */
+  .intake{
+    background:var(--ground-2);border:1px solid var(--rule);border-radius:6px;padding:20px;
+  }
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--moss);margin:0 0 6px;
+  }
+  .lede{font-family:var(--disp);font-size:clamp(22px,5.2vw,30px);line-height:1.2;margin:0 0 8px;font-weight:400}
+  .lede em{font-style:italic;color:var(--ochre-lt)}
+  .sub{margin:0 0 18px;color:#a9b8b1;font-size:14.5px;max-width:56ch}
+
+  .drop{
+    border:1.5px dashed var(--rule);border-radius:6px;background:var(--ground-3);
+    padding:26px 16px;text-align:center;transition:border-color .15s,background .15s;
+  }
+  .drop.hot{border-color:var(--ochre);background:#2a3a35}
+  .drop svg{color:var(--moss);margin-bottom:10px}
+  .drop p{margin:0 0 14px;color:#a9b8b1;font-size:14px}
+  .btn{
+    background:var(--ochre);color:#17130a;border:none;border-radius:4px;
+    padding:12px 20px;font-weight:700;letter-spacing:.02em;min-height:46px;
+  }
+  .btn:hover{background:var(--ochre-lt)}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--bone);border:1px solid var(--rule);font-weight:500}
+  .btn.ghost:hover{border-color:var(--ochre);color:var(--ochre-lt);background:transparent}
+  .btn.wide{width:100%}
+
+  .staged{display:none;margin-top:16px}
+  .staged.on{display:block}
+  .stagewrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+  .stagepic{
+    width:132px;height:132px;flex:0 0 auto;border:1px solid var(--rule);border-radius:4px;
+    overflow:hidden;background:#0e1413;position:relative;
+  }
+  .stagepic img{width:100%;height:100%;object-fit:cover;display:block}
+  .stagemeta{flex:1;min-width:210px}
+  .fieldrow{margin-bottom:10px}
+  label.fl{
+    display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:#8fa39b;margin-bottom:4px;
+  }
+  input[type=text],select,textarea{
+    width:100%;background:var(--ground);border:1px solid var(--rule);border-radius:4px;
+    color:var(--bone);font-family:inherit;font-size:15px;padding:9px 10px;min-height:42px;
+  }
+  textarea{min-height:64px;resize:vertical;line-height:1.45}
+  input:focus,select:focus,textarea:focus{border-color:var(--ochre)}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.twocol{grid-template-columns:1fr}}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+  /* ---------- developing ---------- */
+  .developing{position:absolute;inset:0;background:rgba(14,20,19,.55);overflow:hidden}
+  .developing::after{
+    content:"";position:absolute;left:0;right:0;height:34%;
+    background:linear-gradient(180deg,rgba(181,132,47,0) 0%,rgba(217,169,75,.55) 50%,rgba(181,132,47,0) 100%);
+    animation:sweep 1.5s linear infinite;
+  }
+  @keyframes sweep{0%{top:-34%}100%{top:100%}}
+  @media(prefers-reduced-motion:reduce){.developing::after{animation:none;top:33%}}
+  .status{
+    margin-top:14px;font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;color:var(--ochre-lt);
+  }
+  .errbox{
+    margin-top:14px;border:1px solid var(--danger);border-left-width:4px;border-radius:4px;
+    background:#2a1a19;padding:12px 14px;font-size:14.5px;color:#f0d9d7;
+  }
+  .errbox strong{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+    text-transform:uppercase;color:#e58b86;margin-bottom:4px}
+
+  /* ---------- specimen sheet ---------- */
+  .sheet{
+    margin-top:24px;background:var(--bone);color:var(--ink);border-radius:3px;
+    box-shadow:var(--shadow);padding:22px 20px 20px;position:relative;
+    border-top:5px solid var(--ochre);
+  }
+  @media(min-width:700px){.sheet{padding:30px 34px 26px}}
+  .sheet::before{
+    content:"";position:absolute;inset:9px;border:1px solid rgba(29,36,32,.18);
+    border-radius:2px;pointer-events:none;
+  }
+  .sheet > *{position:relative}
+
+  .sheethead{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+  .mount{
+    flex:0 0 auto;width:150px;background:#fff;padding:7px 7px 7px;border:1px solid rgba(29,36,32,.22);
+  }
+  .mount img{display:block;width:100%;height:150px;object-fit:cover}
+  .mount .capline{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;color:var(--ink-soft);
+    margin-top:6px;text-align:center;text-transform:uppercase;
+  }
+  @media(max-width:560px){.mount{width:100%}.mount img{height:210px}}
+  .namecol{flex:1;min-width:210px}
+  .common{
+    font-family:var(--disp);font-size:clamp(27px,6.4vw,38px);line-height:1.08;
+    font-weight:600;margin:0 0 4px;letter-spacing:-.01em;
+  }
+  .sci{font-family:var(--disp);font-style:italic;font-size:clamp(16px,3.6vw,20px);color:var(--ink-soft);margin:0 0 12px}
+  .stamp{
+    display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.15em;text-transform:uppercase;padding:5px 10px;border:2px solid;border-radius:3px;
+    transform:rotate(-1.5deg);
+  }
+  .stamp.high{color:#2f6a45;border-color:#2f6a45}
+  .stamp.moderate{color:#8a6a17;border-color:#8a6a17}
+  .stamp.low,.stamp.uncertain{color:#9a3b1f;border-color:#9a3b1f}
+  .confnote{margin:10px 0 0;font-size:14px;color:var(--ink-soft);max-width:46ch}
+  .summary{margin:16px 0 0;font-size:16px;line-height:1.55}
+
+  .sect{margin-top:22px;padding-top:16px;border-top:1px solid rgba(29,36,32,.2)}
+  .sect h3{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ochre);margin:0 0 10px;font-weight:600;
+  }
+  .sect p{margin:0 0 8px;font-size:15.5px}
+  .sect p:last-child{margin-bottom:0}
+
+  .ladder{font-family:var(--mono);font-size:13px}
+  .rung{display:flex;align-items:baseline;gap:8px;padding:4px 0;border-bottom:1px dotted rgba(29,36,32,.22)}
+  .rung:last-child{border-bottom:none}
+  .rung .rk{flex:0 0 auto;width:96px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+  .rung .rv{flex:1;text-align:right;font-weight:500}
+  .rung.species .rv{font-family:var(--disp);font-style:italic;font-size:15px}
+
+  .marks{list-style:none;margin:0;padding:0;counter-reset:fm}
+  .marks li{
+    counter-increment:fm;position:relative;padding-left:34px;margin-bottom:11px;font-size:15.5px;line-height:1.5;
+  }
+  .marks li::before{
+    content:counter(fm,decimal-leading-zero);position:absolute;left:0;top:1px;
+    font-family:var(--mono);font-size:10.5px;color:var(--ochre);border:1px solid var(--ochre);
+    border-radius:2px;padding:1px 4px;letter-spacing:.06em;
+  }
+  .lookalike{padding:11px 0;border-bottom:1px dotted rgba(29,36,32,.22)}
+  .lookalike:last-child{border-bottom:none}
+  .lookalike .la-n{font-family:var(--disp);font-weight:600;font-size:17px}
+  .lookalike .la-s{font-family:var(--disp);font-style:italic;color:var(--ink-soft);font-size:14.5px}
+  .lookalike .la-t{font-size:15px;margin-top:3px}
+
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.facts{grid-template-columns:1fr}}
+  .fact .fk{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px}
+  .fact .fv{font-size:15px}
+
+  /* ---------- hazard ---------- */
+  .hazard{
+    margin:18px 0 0;border-radius:3px;padding:14px 16px;border:2px solid;
+    background:rgba(255,255,255,.5);
+  }
+  .hazard .hz-h{
+    display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:600;
+    font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px;
+  }
+  .hazard p{margin:0 0 7px;font-size:15.5px;line-height:1.5}
+  .hazard p:last-child{margin-bottom:0}
+  .hazard .hz-tags{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;margin-bottom:7px}
+  .hz-caution{border-color:var(--caution);background:#f6ecd6}
+  .hz-caution .hz-h{color:#8a6a17}
+  .hz-harmful{border-color:var(--harmful);background:#f8e3d6}
+  .hz-harmful .hz-h{color:#a2431b}
+  .hz-dangerous{border-color:var(--danger);background:#f6dad8}
+  .hz-dangerous .hz-h{color:#8f1f1c}
+  .hz-dangerous{border-width:3px}
+
+  .nofood{
+    margin-top:16px;border:1px solid var(--danger);border-left-width:4px;border-radius:3px;
+    background:#f6dad8;padding:12px 14px;font-size:15px;color:#4a1614;
+  }
+  .nofood strong{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:#8f1f1c;margin-bottom:4px}
+
+  .plan{border:1px solid rgba(29,36,32,.25);border-radius:3px;padding:14px;background:rgba(255,255,255,.45)}
+  .plan h4{font-family:var(--disp);font-size:17px;margin:0 0 8px;font-weight:600}
+  .steps{list-style:none;margin:0 0 10px;padding:0;counter-reset:st}
+  .steps li{counter-increment:st;position:relative;padding-left:30px;margin-bottom:9px;font-size:15px;line-height:1.5}
+  .steps li::before{
+    content:counter(st);position:absolute;left:0;top:0;width:21px;height:21px;
+    display:grid;place-items:center;border-radius:50%;background:var(--ink);color:var(--bone);
+    font-family:var(--mono);font-size:11px;
+  }
+  .plan .cav{font-size:14px;color:#7a3b1c;border-top:1px dotted rgba(29,36,32,.25);padding-top:8px;margin:0}
+  .statuspill{
+    display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;
+    text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:10px;
+  }
+  .st-native{background:#dcead9;color:#2f6a45;border:1px solid #2f6a45}
+  .st-introduced{background:#f6ecd6;color:#8a6a17;border:1px solid #8a6a17}
+  .st-invasive{background:#f8e3d6;color:#a2431b;border:1px solid #a2431b}
+  .st-unknown{background:#e3e0d6;color:#4c574f;border:1px solid #7d867f}
+
+  .tag{
+    margin-top:26px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    border:2px solid var(--ochre);border-radius:3px;padding:11px 13px;background:rgba(181,132,47,.09);
+    font-family:var(--mono);font-size:11px;letter-spacing:.09em;color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .tag b{color:var(--ink);font-weight:600}
+  .sheetacts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn.ink{background:var(--ink);color:var(--bone)}
+  .btn.ink:hover{background:#313c34}
+  .btn.inkghost{background:transparent;color:var(--ink);border:1px solid rgba(29,36,32,.35);font-weight:500}
+  .btn.inkghost:hover{border-color:var(--ink);color:var(--ink);background:transparent}
+
+  /* ---------- journal ---------- */
+  .journal{margin-top:34px}
+  .journal h2{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--moss);margin:0 0 12px;font-weight:600;
+  }
+  .jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+  .chip{
+    background:var(--ground-2);border:1px solid var(--rule);border-radius:999px;
+    color:#a9b8b1;padding:6px 13px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.09em;text-transform:uppercase;min-height:32px;
+  }
+  .chip:hover{border-color:var(--ochre);color:var(--ochre-lt)}
+  .chip.on{background:var(--ochre);border-color:var(--ochre);color:#17130a;font-weight:600}
+  .chip .cn{opacity:.75;margin-left:6px}
+  .chip.on .cn{opacity:.65}
+  .jmeta{
+    font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:#8fa39b;margin:0 0 12px;
+  }
+  .jmeta b{color:var(--moss);font-weight:600}
+  .jcard .jg{
+    font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--moss);margin-bottom:4px;
+  }
+  .jcard{
+    background:var(--ground-2);border:1px solid var(--rule);border-radius:5px;overflow:hidden;
+    text-align:left;padding:0;color:var(--bone);display:flex;flex-direction:column;
+  }
+  .jcard:hover{border-color:var(--ochre)}
+  .jcard img{width:100%;height:96px;object-fit:cover;display:block;background:#0e1413}
+  .jcard .jb{padding:9px 10px 11px}
+  .jcard .jn{font-family:var(--disp);font-size:15px;font-weight:600;line-height:1.2;margin-bottom:3px}
+  .jcard .jd{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:#8fa39b;text-transform:uppercase}
+  .jcard .jh{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .jempty{color:#8fa39b;font-size:14.5px;margin:0}
+  .jfoot{margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+  /* ---------- modal ---------- */
+  .modal{
+    position:fixed;inset:0;background:rgba(8,12,11,.72);z-index:50;
+    display:none;align-items:center;justify-content:center;padding:16px;
+  }
+  .modal.on{display:flex}
+  .mbox{
+    background:var(--ground-2);border:1px solid var(--rule);border-radius:6px;
+    width:100%;max-width:430px;padding:22px;max-height:88dvh;overflow:auto;
+  }
+  .mbox h2{font-family:var(--disp);font-size:22px;margin:0 0 4px;font-weight:600}
+  .mbox .mhint{font-size:13.5px;color:#a9b8b1;margin:0 0 18px}
+  .helper{font-size:12.5px;color:#8fa39b;margin:5px 0 0}
+
+  footer.foot{
+    border-top:1px solid var(--rule);padding:20px 18px 30px;text-align:center;
+    font-size:13px;color:#8fa39b;
+  }
+  footer.foot p{margin:0 0 7px;max-width:62ch;margin-left:auto;margin-right:auto}
+  footer.foot a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--moss)}
+  footer.foot a:hover{text-decoration:underline}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="brandnum">097</span>
+  <span class="brandname">Field Marks</span>
+  <span class="spacer"></span>
+  <a class="home" href="https://augustineiacopelli.github.io/appaday/">AppADay</a>
+  <button class="iconbtn" id="gear" aria-label="Settings" title="Settings">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+  </button>
+</header>
+
+<main>
+  <section class="intake" aria-labelledby="lede">
+    <p class="eyebrow">Specimen intake</p>
+    <h1 class="lede" id="lede">Photograph what you found. Get the <em>field marks</em> that name it.</h1>
+    <p class="sub">Point at a bird, mammal, insect, reptile, plant, or fungus. Field Marks returns the diagnostic features an identification actually rests on, the species it is most often confused with, and a plain warning when the thing in front of you can hurt you.</p>
+
+    <div class="drop" id="drop">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4z"></path>
+        <circle cx="12" cy="13" r="4"></circle>
+      </svg>
+      <p id="dropmsg">Take a photo, choose one from your library, or drop a file here.</p>
+      <button class="btn" id="pick">Add a photo</button>
+      <input type="file" id="file" accept="image/*" class="sr" aria-label="Specimen photograph">
+    </div>
+
+    <div class="staged" id="staged">
+      <div class="stagewrap">
+        <div class="stagepic">
+          <img id="preview" alt="Selected specimen photograph">
+          <div class="developing" id="dev" style="display:none"></div>
+        </div>
+        <div class="stagemeta">
+          <div class="twocol">
+            <div class="fieldrow">
+              <label class="fl" for="kind">What is it, roughly</label>
+              <select id="kind">
+                <option value="">Let Claude decide</option>
+                <option value="bird">Bird</option>
+                <option value="mammal">Mammal</option>
+                <option value="insect or spider">Insect or spider</option>
+                <option value="reptile or amphibian">Reptile or amphibian</option>
+                <option value="plant">Plant</option>
+                <option value="fungus or lichen">Fungus or lichen</option>
+                <option value="marine or freshwater life">Marine or freshwater life</option>
+                <option value="track, scat, nest, or other sign">Track, scat, nest, or sign</option>
+              </select>
+            </div>
+            <div class="fieldrow">
+              <label class="fl" for="loc">Where you are</label>
+              <input type="text" id="loc" placeholder="Sedgwick County, Kansas" autocomplete="off">
+            </div>
+          </div>
+          <div class="fieldrow">
+            <label class="fl" for="notes">What you noticed that a photo misses</label>
+            <textarea id="notes" placeholder="Size against your hand, smell, sound, how it moved, what it was growing on."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="run">Identify specimen</button>
+        <button class="btn ghost" id="replace">Use a different photo</button>
+      </div>
+      <p class="status" id="status" style="display:none"></p>
+      <div class="errbox" id="err" style="display:none"></div>
+    </div>
+  </section>
+
+  <div id="result" aria-live="polite"></div>
+
+  <section class="journal">
+    <h2>Field journal</h2>
+    <div id="jwrap"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Field Marks is a study aid, not an authority. Every identification it returns is a best reading of one photograph and should be confirmed against a regional field guide, a local extension office, or a naturalist before you act on it.</p>
+  <p><strong>It never tells you whether something is safe to eat, and it never will.</strong> Foraging decisions are made with a physical guide and an experienced person, not a phone.</p>
+  <p><a href="https://augustineiacopelli.github.io/appaday/">Back to AppADay</a></p>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+  <div class="mbox">
+    <h2 id="mtitle">Settings</h2>
+    <p class="mhint">Your key stays in this browser and is sent only to Anthropic. It is never stored anywhere else.</p>
+    <div class="fieldrow">
+      <label class="fl" for="key">Anthropic API key</label>
+      <input type="text" id="key" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+      <p class="helper">Create one at console.anthropic.com under API Keys.</p>
+    </div>
+    <div class="fieldrow">
+      <label class="fl" for="sess">Field session name</label>
+      <input type="text" id="sess" placeholder="Chisholm Creek, August" autocomplete="off">
+      <p class="helper">Printed on each specimen tag so a day of walking stays together.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" id="save">Save settings</button>
+      <button class="btn ghost" id="close">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var CLAUDE_MODEL = 'claude-sonnet-5';
+  var API_URL = 'https://api.anthropic.com/v1/messages';
+  var K_KEY = 'fieldmarks-key';
+  var K_SESS = 'fieldmarks-session';
+  var K_JOURNAL = 'fieldmarks-journal';
+  var K_SEQ = 'fieldmarks-seq';
+  var K_FILTER = 'fieldmarks-filter';
+  var MAX_JOURNAL = 120;
+  var PAGE_SIZE = 18;
+  var MAX_EDGE = 1400;
+  var THUMB_EDGE = 168;
+
+  /* ---------- storage helpers ---------- */
+  function lsGet(k, fb){
+    try { var v = localStorage.getItem(k); return v === null ? fb : v; }
+    catch(e){ return fb; }
+  }
+  function lsSet(k, v){
+    try { localStorage.setItem(k, v); return true; }
+    catch(e){ return false; }
+  }
+  function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+  function readJournal(){
+    try {
+      var raw = lsGet(K_JOURNAL, '');
+      if(!raw) return [];
+      var arr = JSON.parse(raw);
+      return Object.prototype.toString.call(arr) === '[object Array]' ? arr : [];
+    } catch(e){ return []; }
+  }
+  function writeJournal(arr){
+    var copy = arr.slice(0, MAX_JOURNAL);
+    while(copy.length){
+      if(lsSet(K_JOURNAL, JSON.stringify(copy))) return true;
+      copy.pop();
+    }
+    lsDel(K_JOURNAL);
+    return false;
+  }
+  function nextAccession(){
+    var n = parseInt(lsGet(K_SEQ, '0'), 10);
+    if(isNaN(n) || n < 0) n = 0;
+    n = n + 1;
+    lsSet(K_SEQ, String(n));
+    var s = String(n);
+    while(s.length < 4) s = '0' + s;
+    return 'FM-097-' + s;
+  }
+
+  /* ---------- tiny DOM helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function el(tag, cls, text){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(text !== undefined && text !== null && text !== '') n.textContent = String(text);
+    return n;
+  }
+  function clear(node){
+    while(node.firstChild) node.removeChild(node.firstChild);
+  }
+  function str(v){
+    if(v === undefined || v === null) return '';
+    if(typeof v === 'string') return v.trim();
+    return String(v).trim();
+  }
+  function list(v){
+    if(Object.prototype.toString.call(v) !== '[object Array]') return [];
+    var out = [], i;
+    for(i = 0; i < v.length; i++){
+      var s = typeof v[i] === 'string' ? v[i].trim() : '';
+      if(s) out.push(s);
+    }
+    return out;
+  }
+
+  /* ---------- image pipeline ---------- */
+  function decodeImage(file){
+    return new Promise(function(resolve, reject){
+      if(typeof createImageBitmap === 'function'){
+        createImageBitmap(file, { imageOrientation: 'from-image' }).then(resolve, function(){
+          createImageBitmap(file).then(resolve, function(){ fallback(); });
+        });
+      } else {
+        fallback();
+      }
+      function fallback(){
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function(){ URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('decode')); };
+        img.src = url;
+      }
+    });
+  }
+  function toJpeg(src, edge, quality){
+    var w = src.width || src.naturalWidth;
+    var h = src.height || src.naturalHeight;
+    if(!w || !h) throw new Error('decode');
+    var scale = Math.min(1, edge / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * scale));
+    var ch = Math.max(1, Math.round(h * scale));
+    var c = document.createElement('canvas');
+    c.width = cw; c.height = ch;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.drawImage(src, 0, 0, cw, ch);
+    return c.toDataURL('image/jpeg', quality);
+  }
+  function stripPrefix(dataUrl){
+    var i = dataUrl.indexOf(',');
+    return i >= 0 ? dataUrl.slice(i + 1) : dataUrl;
+  }
+
+  /* ---------- prompt ---------- */
+  var SYSTEM_PROMPT = [
+    'You are a careful field naturalist writing an identification record from a single photograph.',
+    'You reason from visible evidence only and you say plainly when the photograph cannot carry the weight of a confident identification.',
+    '',
+    'Non-negotiable rules:',
+    '1. NEVER state or imply that anything is edible, safe to eat, safe to taste, or safe to touch. Do not rate edibility. Do not mention that a species is considered a choice edible. If the user seems to be asking about eating something, decline that part and identify the organism only.',
+    '2. Hedge toward safety. If the identification is not confident and the plausible candidates include anything venomous, toxic, stinging, allergenic, or aggressive, describe the hazard of the most dangerous plausible candidate and say clearly that it has not been ruled out.',
+    '3. Never downgrade a hazard because the identification is probably the harmless option. Rank hazard by the worst plausible candidate, not the most likely one.',
+    '4. Snakes, spiders, mushrooms, and berries deserve extra caution. For those, an identification that is not high confidence should carry an explicit statement that a photograph alone is not sufficient.',
+    '5. Use real taxonomy. If you do not know a rank, use an empty string rather than inventing one.',
+    '',
+    'Reply with a single raw JSON object and nothing else. No preamble, no explanation, no markdown fences. Use this exact shape:',
+    '{',
+    '"identified": true or false,',
+    '"subject_class": "bird | mammal | insect | arachnid | reptile | amphibian | fish | plant | fungus | lichen | sign | other",',
+    '"common_name": "",',
+    '"scientific_name": "",',
+    '"taxonomy": {"kingdom":"","phylum":"","class":"","order":"","family":"","genus":"","species":""},',
+    '"confidence": "high | moderate | low | uncertain",',
+    '"confidence_note": "One or two sentences on what the photo does and does not let you conclude, and what a better photo would show.",',
+    '"summary": "Two or three sentences a curious person would want to read first.",',
+    '"field_marks": ["The specific visible features that drove this identification. Three to six items. Point at the photograph, do not recite a species description."],',
+    '"lookalikes": [{"common_name":"","scientific_name":"","how_to_tell":"The single most reliable way to separate it from the identification above."}],',
+    '"habitat": "",',
+    '"range": "",',
+    '"season": "Timing that matters: bloom, migration, activity period, or fruiting.",',
+    '"behavior_note": "Optional. Anything about how it behaves that helps confirm it in person.",',
+    '"hazard": {',
+    '  "level": "none | caution | harmful | dangerous",',
+    '  "types": ["venomous","toxic if ingested","skin irritant","stinging","bites","allergenic","aggressive when cornered","disease vector","spines or thorns"],',
+    '  "detail": "What the actual risk is and how it usually happens.",',
+    '  "avoidance": "What to do right now to stay out of trouble.",',
+    '  "if_exposed": "What to do if contact already happened. Keep it conservative and say when to seek medical care."',
+    '},',
+    '"invasive": {',
+    '  "status": "native | introduced | invasive | unknown",',
+    '  "region_note": "Status depends on region. Say which region you are judging by.",',
+    '  "why_it_matters": "",',
+    '  "control": {"summary":"","steps":["Ordered, practical removal or control steps for a private landowner."],"timing":"Best window in the year to act.","cautions":"Legal, ecological, or safety cautions including anything that makes removal risky."}',
+    '},',
+    '"plant_health": {',
+    '  "applicable": true or false,',
+    '  "assessment": "Only if this is a plant AND it shows visible stress. What you can see: chlorosis, necrosis, wilt, leaf spot, insect damage, deficiency signs.",',
+    '  "likely_causes": ["Ranked from most to least likely, with the visible evidence for each."],',
+    '  "care_plan": ["Ordered steps the owner could try, cheapest and least invasive first."],',
+    '  "outlook": "Honest read on recovery, and when to call an extension office or arborist instead."',
+    '},',
+    '"better_photo": "If confidence is below high, exactly what to photograph next to settle it."',
+    '}',
+    '',
+    'Set invasive.status to "unknown" and leave control fields empty when you have no location to judge by.',
+    'Set plant_health.applicable to false for anything that is not a plant, and for healthy plants.',
+    'If you cannot identify the organism, set identified to false, put your best guess at the family or group in common_name, and still fill hazard using the worst plausible candidate for that group.'
+  ].join('\n');
+
+  function buildUserText(kind, loc, notes){
+    var parts = ['Identify the organism in this photograph and return the JSON record.'];
+    if(kind) parts.push('The person believes this is a ' + kind + '. Correct them if the photograph says otherwise.');
+    if(loc) parts.push('Photographed near: ' + loc + '. Use this to judge range, native status, and which look-alikes are actually plausible here.');
+    else parts.push('No location was given. Do not assume one. Say so where range or invasive status depends on it.');
+    if(notes) parts.push('Field notes from the observer: ' + notes);
+    return parts.join('\n\n');
+  }
+
+  /* ---------- API ---------- */
+  function callClaude(key, b64, kind, loc, notes){
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 2400,
+        system: SYSTEM_PROMPT,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } },
+            { type: 'text', text: buildUserText(kind, loc, notes) }
+          ]
+        }]
+      })
+    }).then(function(res){
+      return res.text().then(function(body){
+        if(!res.ok){
+          var msg = '';
+          try { var j = JSON.parse(body); msg = j && j.error && j.error.message ? j.error.message : ''; } catch(e){}
+          var e2 = new Error(msg || ('Request failed with status ' + res.status));
+          e2.status = res.status;
+          throw e2;
+        }
+        return JSON.parse(body);
+      });
+    }).then(function(data){
+      var text = '', i;
+      if(data && Object.prototype.toString.call(data.content) === '[object Array]'){
+        for(i = 0; i < data.content.length; i++){
+          if(data.content[i] && data.content[i].type === 'text') text += data.content[i].text;
+        }
+      }
+      var cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      var a = cleaned.indexOf('{'), b = cleaned.lastIndexOf('}');
+      if(a >= 0 && b > a) cleaned = cleaned.slice(a, b + 1);
+      return JSON.parse(cleaned);
+    });
+  }
+
+  /* ---------- safety normalisation (applied on top of the model) ---------- */
+  var ORDER = { none:0, caution:1, harmful:2, dangerous:3 };
+  var NAMES = ['none','caution','harmful','dangerous'];
+  var RISKY_CLASSES = { fungus:1, lichen:1, plant:1, reptile:1, arachnid:1, insect:1, amphibian:1 };
+
+  function normalize(rec){
+    var r = rec && typeof rec === 'object' ? rec : {};
+    var cls = str(r.subject_class).toLowerCase();
+    var conf = str(r.confidence).toLowerCase();
+    if(conf !== 'high' && conf !== 'moderate' && conf !== 'low') conf = 'uncertain';
+    r.confidence = conf;
+    r.subject_class = cls;
+    r.identified = r.identified === true;
+
+    var hz = r.hazard && typeof r.hazard === 'object' ? r.hazard : {};
+    var lvl = str(hz.level).toLowerCase();
+    if(!(lvl in ORDER)) lvl = 'caution';
+
+    // Hedge upward when the identification is shaky and the group can hurt you.
+    var shaky = (conf === 'low' || conf === 'uncertain' || !r.identified);
+    if(shaky && RISKY_CLASSES[cls] && ORDER[lvl] < ORDER.caution) lvl = 'caution';
+    hz.level = lvl;
+    r.hazard = hz;
+    r.hedged = shaky && RISKY_CLASSES[cls] ? true : false;
+
+    // Anything a person might put in their mouth gets the no-food notice, always.
+    r.noFood = (cls === 'fungus' || cls === 'lichen' || cls === 'plant');
+    return r;
+  }
+
+  /* ---------- rendering ---------- */
+  function section(title){
+    var s = el('section', 'sect');
+    s.appendChild(el('h3', null, title));
+    return s;
+  }
+  function fact(k, v){
+    var f = el('div', 'fact');
+    f.appendChild(el('div', 'fk', k));
+    f.appendChild(el('div', 'fv', v));
+    return f;
+  }
+  function hazardTitle(level){
+    if(level === 'dangerous') return 'Dangerous. Keep your distance.';
+    if(level === 'harmful') return 'Can hurt you. Handle with care.';
+    if(level === 'caution') return 'Worth a little caution';
+    return 'No known hazard to people';
+  }
+
+  function renderHazard(r){
+    var hz = r.hazard || {};
+    var lvl = hz.level || 'none';
+    var box = el('div', 'hazard hz-' + lvl);
+    var h = el('div', 'hz-h');
+    h.appendChild(el('span', null, lvl === 'none' ? 'Safety' : 'Safety warning'));
+    h.appendChild(el('span', null, '/'));
+    h.appendChild(el('span', null, hazardTitle(lvl)));
+    box.appendChild(h);
+
+    var types = list(hz.types);
+    if(types.length) box.appendChild(el('div', 'hz-tags', types.join('  |  ')));
+    if(str(hz.detail)) box.appendChild(el('p', null, str(hz.detail)));
+    if(str(hz.avoidance)) box.appendChild(el('p', null, str(hz.avoidance)));
+    if(str(hz.if_exposed)) box.appendChild(el('p', null, str(hz.if_exposed)));
+
+    if(r.hedged){
+      box.appendChild(el('p', null,
+        'This warning is deliberately set higher than the identification alone would call for. ' +
+        'The photograph did not give enough to be confident, so the risk shown is that of the most dangerous ' +
+        'thing this could reasonably be, not the most likely one. Treat it as unidentified until you can confirm it in person.'));
+    }
+    if(lvl === 'harmful' || lvl === 'dangerous'){
+      box.appendChild(el('p', null,
+        'If someone has been bitten, stung, or exposed and is having any reaction beyond mild local irritation, ' +
+        'call emergency services. In the United States, Poison Control is 1-800-222-1222 and answers around the clock.'));
+    }
+    return box;
+  }
+
+  function renderSheet(entry){
+    var r = entry.rec;
+    var sheet = el('article', 'sheet');
+
+    // A dangerous or harmful reading is stated before anything else on the sheet.
+    var lvl = (r.hazard && r.hazard.level) || 'none';
+    if(lvl === 'dangerous' || lvl === 'harmful'){
+      var top = renderHazard(r);
+      top.style.marginTop = '0';
+      top.style.marginBottom = '20px';
+      sheet.appendChild(top);
+    }
+
+    var head = el('div', 'sheethead');
+    var mount = el('div', 'mount');
+    var img = el('img');
+    img.src = entry.thumb;
+    img.alt = 'Photograph of ' + (str(r.common_name) || 'the specimen');
+    mount.appendChild(img);
+    mount.appendChild(el('div', 'capline', entry.dateLabel));
+    head.appendChild(mount);
+
+    var col = el('div', 'namecol');
+    col.appendChild(el('h2', 'common', str(r.common_name) || 'Not identified'));
+    if(str(r.scientific_name)) col.appendChild(el('p', 'sci', str(r.scientific_name)));
+    var stamp = el('span', 'stamp ' + r.confidence,
+      r.identified ? (r.confidence + ' confidence') : 'no confident match');
+    col.appendChild(stamp);
+    if(str(r.confidence_note)) col.appendChild(el('p', 'confnote', str(r.confidence_note)));
+    head.appendChild(col);
+    sheet.appendChild(head);
+
+    if(str(r.summary)) sheet.appendChild(el('p', 'summary', str(r.summary)));
+
+    if(lvl === 'caution' || lvl === 'none'){
+      sheet.appendChild(renderHazard(r));
+    }
+
+    if(r.noFood){
+      var nf = el('div', 'nofood');
+      nf.appendChild(el('strong', null, 'Not a food safety tool'));
+      nf.appendChild(document.createTextNode(
+        r.subject_class === 'fungus'
+          ? 'Mushrooms are not identified from photographs well enough to eat. Deadly species have harmless twins, and the differences are often in spore print, gill attachment, smell, and substrate, none of which a photo carries. Field Marks will never tell you a fungus is edible.'
+          : 'Field Marks will never tell you whether a plant is edible. Toxic plants routinely resemble familiar food plants, and the difference can be a single feature this photograph does not show.'));
+      sheet.appendChild(nf);
+    }
+
+    // Field marks
+    var marks = list(r.field_marks);
+    if(marks.length){
+      var s1 = section('What names it');
+      var ul = el('ul', 'marks');
+      for(var i = 0; i < marks.length; i++) ul.appendChild(el('li', null, marks[i]));
+      s1.appendChild(ul);
+      sheet.appendChild(s1);
+    }
+
+    // Taxonomy ladder
+    var tx = r.taxonomy && typeof r.taxonomy === 'object' ? r.taxonomy : {};
+    var ranks = [
+      ['Kingdom', tx.kingdom], ['Phylum / Div.', tx.phylum], ['Class', tx.class],
+      ['Order', tx.order], ['Family', tx.family], ['Genus', tx.genus], ['Species', tx.species]
+    ];
+    var anyRank = false, ri;
+    for(ri = 0; ri < ranks.length; ri++){ if(str(ranks[ri][1])) anyRank = true; }
+    if(anyRank){
+      var s2 = section('Where it sits');
+      var lad = el('div', 'ladder');
+      for(ri = 0; ri < ranks.length; ri++){
+        var val = str(ranks[ri][1]);
+        if(!val) continue;
+        var rung = el('div', 'rung' + (ranks[ri][0] === 'Species' ? ' species' : ''));
+        rung.appendChild(el('span', 'rk', ranks[ri][0]));
+        rung.appendChild(el('span', 'rv', val));
+        lad.appendChild(rung);
+      }
+      s2.appendChild(lad);
+      sheet.appendChild(s2);
+    }
+
+    // Look-alikes
+    var las = Object.prototype.toString.call(r.lookalikes) === '[object Array]' ? r.lookalikes : [];
+    var laOut = [];
+    for(var j = 0; j < las.length; j++){
+      if(las[j] && typeof las[j] === 'object' && str(las[j].common_name)) laOut.push(las[j]);
+    }
+    if(laOut.length){
+      var s3 = section('Easily confused with');
+      for(var k = 0; k < laOut.length; k++){
+        var la = el('div', 'lookalike');
+        la.appendChild(el('div', 'la-n', str(laOut[k].common_name)));
+        if(str(laOut[k].scientific_name)) la.appendChild(el('div', 'la-s', str(laOut[k].scientific_name)));
+        if(str(laOut[k].how_to_tell)) la.appendChild(el('div', 'la-t', str(laOut[k].how_to_tell)));
+        s3.appendChild(la);
+      }
+      sheet.appendChild(s3);
+    }
+
+    // Where and when
+    if(str(r.habitat) || str(r.range) || str(r.season) || str(r.behavior_note)){
+      var s4 = section('Where and when');
+      var fg = el('div', 'facts');
+      if(str(r.habitat)) fg.appendChild(fact('Habitat', str(r.habitat)));
+      if(str(r.range)) fg.appendChild(fact('Range', str(r.range)));
+      if(str(r.season)) fg.appendChild(fact('Timing', str(r.season)));
+      if(str(r.behavior_note)) fg.appendChild(fact('Behavior', str(r.behavior_note)));
+      s4.appendChild(fg);
+      sheet.appendChild(s4);
+    }
+
+    // Invasive status and control
+    var inv = r.invasive && typeof r.invasive === 'object' ? r.invasive : {};
+    var invStatus = str(inv.status).toLowerCase();
+    if(invStatus && invStatus !== 'unknown'){
+      var s5 = section('Standing in this place');
+      s5.appendChild(el('span', 'statuspill st-' + invStatus, invStatus));
+      if(str(inv.region_note)) s5.appendChild(el('p', null, str(inv.region_note)));
+      if(str(inv.why_it_matters)) s5.appendChild(el('p', null, str(inv.why_it_matters)));
+
+      var ctl = inv.control && typeof inv.control === 'object' ? inv.control : {};
+      var steps = list(ctl.steps);
+      if((invStatus === 'invasive' || invStatus === 'introduced') && (steps.length || str(ctl.summary))){
+        var plan = el('div', 'plan');
+        plan.appendChild(el('h4', null, 'A removal plan to weigh, not to follow blindly'));
+        if(str(ctl.summary)) plan.appendChild(el('p', null, str(ctl.summary)));
+        if(steps.length){
+          var ol = el('ol', 'steps');
+          for(var m = 0; m < steps.length; m++) ol.appendChild(el('li', null, steps[m]));
+          plan.appendChild(ol);
+        }
+        if(str(ctl.timing)) plan.appendChild(el('p', null, 'Timing: ' + str(ctl.timing)));
+        plan.appendChild(el('p', 'cav', (str(ctl.cautions) ? str(ctl.cautions) + ' ' : '') +
+          'Check this against your county extension office before removing anything. Some species are protected, some are regulated, and herbicide rules vary by state and by proximity to water.'));
+        s5.appendChild(plan);
+      }
+      sheet.appendChild(s5);
+    }
+
+    // Plant health
+    var ph = r.plant_health && typeof r.plant_health === 'object' ? r.plant_health : {};
+    if(ph.applicable === true && (str(ph.assessment) || list(ph.care_plan).length)){
+      var s6 = section('This plant is struggling');
+      if(str(ph.assessment)) s6.appendChild(el('p', null, str(ph.assessment)));
+      var causes = list(ph.likely_causes);
+      if(causes.length){
+        var cplan = el('div', 'plan');
+        cplan.appendChild(el('h4', null, 'What is most likely wrong'));
+        var cul = el('ol', 'steps');
+        for(var n = 0; n < causes.length; n++) cul.appendChild(el('li', null, causes[n]));
+        cplan.appendChild(cul);
+        s6.appendChild(cplan);
+      }
+      var care = list(ph.care_plan);
+      if(care.length){
+        var care_ = el('div', 'plan');
+        care_.style.marginTop = '12px';
+        care_.appendChild(el('h4', null, 'A plan worth trying first'));
+        var cul2 = el('ol', 'steps');
+        for(var p = 0; p < care.length; p++) cul2.appendChild(el('li', null, care[p]));
+        care_.appendChild(cul2);
+        if(str(ph.outlook)) care_.appendChild(el('p', 'cav', str(ph.outlook)));
+        s6.appendChild(care_);
+      }
+      sheet.appendChild(s6);
+    }
+
+    if(str(r.better_photo)){
+      var s7 = section('To settle it');
+      s7.appendChild(el('p', null, str(r.better_photo)));
+      sheet.appendChild(s7);
+    }
+
+    // Specimen tag
+    var tag = el('div', 'tag');
+    var t1 = el('span');
+    t1.appendChild(document.createTextNode('Accession '));
+    t1.appendChild(el('b', null, entry.accession));
+    tag.appendChild(t1);
+    if(entry.session){
+      var t2 = el('span');
+      t2.appendChild(document.createTextNode('Session '));
+      t2.appendChild(el('b', null, entry.session));
+      tag.appendChild(t2);
+    }
+    if(entry.loc){
+      var t3 = el('span');
+      t3.appendChild(document.createTextNode('Locality '));
+      t3.appendChild(el('b', null, entry.loc));
+      tag.appendChild(t3);
+    }
+    var t4 = el('span');
+    t4.appendChild(document.createTextNode('Recorded '));
+    t4.appendChild(el('b', null, entry.dateLabel));
+    tag.appendChild(t4);
+    sheet.appendChild(tag);
+
+    var acts = el('div', 'sheetacts');
+    var cp = el('button', 'btn ink', 'Copy this record');
+    cp.addEventListener('click', function(){ copyRecord(entry, cp); });
+    acts.appendChild(cp);
+    var again = el('button', 'btn inkghost', 'Identify something else');
+    again.addEventListener('click', function(){
+      reset();
+      window.scrollTo(0, 0);
+    });
+    acts.appendChild(again);
+    var del = el('button', 'btn inkghost', 'Remove this record');
+    var delArmed = false, delTimer = null;
+    del.addEventListener('click', function(){
+      if(!delArmed){
+        delArmed = true;
+        del.textContent = 'Tap again to remove';
+        delTimer = setTimeout(function(){ delArmed = false; del.textContent = 'Remove this record'; }, 4000);
+        return;
+      }
+      if(delTimer) clearTimeout(delTimer);
+      removeEntry(entry);
+    });
+    acts.appendChild(del);
+    sheet.appendChild(acts);
+
+    return sheet;
+  }
+
+  function plainText(entry){
+    var r = entry.rec, out = [];
+    out.push('FIELD MARKS ' + entry.accession + '  (' + entry.dateLabel + ')');
+    if(entry.session) out.push('Session: ' + entry.session);
+    if(entry.loc) out.push('Locality: ' + entry.loc);
+    out.push('');
+    out.push((str(r.common_name) || 'Not identified') + (str(r.scientific_name) ? '  (' + str(r.scientific_name) + ')' : ''));
+    out.push('Confidence: ' + r.confidence);
+    if(str(r.confidence_note)) out.push(str(r.confidence_note));
+    if(str(r.summary)){ out.push(''); out.push(str(r.summary)); }
+    var hz = r.hazard || {};
+    out.push('');
+    out.push('SAFETY [' + (hz.level || 'none') + '] ' + hazardTitle(hz.level || 'none'));
+    if(list(hz.types).length) out.push('Types: ' + list(hz.types).join(', '));
+    if(str(hz.detail)) out.push(str(hz.detail));
+    if(str(hz.avoidance)) out.push(str(hz.avoidance));
+    if(str(hz.if_exposed)) out.push(str(hz.if_exposed));
+    var fm = list(r.field_marks);
+    if(fm.length){
+      out.push(''); out.push('FIELD MARKS');
+      for(var i = 0; i < fm.length; i++) out.push('  ' + (i + 1) + '. ' + fm[i]);
+    }
+    if(r.noFood){
+      out.push('');
+      out.push('Field Marks does not assess edibility and never will.');
+    }
+    out.push('');
+    out.push('Confirm against a regional guide before acting on this record.');
+    return out.join('\n');
+  }
+
+  function copyRecord(entry, btn){
+    var text = plainText(entry);
+    var done = function(){
+      btn.textContent = 'Copied';
+      setTimeout(function(){ btn.textContent = 'Copy this record'; }, 1600);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', 'readonly');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch(e){}
+    if(ta.parentNode) ta.parentNode.removeChild(ta);
+  }
+
+  /* ---------- journal ---------- */
+  var HAZ_DOT = { none:'#7fae8d', caution:'#c8952b', harmful:'#d2622c', dangerous:'#b02a26' };
+
+  // Log groups mirror the intake dropdown so what you pick and what you browse match.
+  var GROUPS = [
+    { id:'bird',    label:'Birds',        classes:['bird'] },
+    { id:'mammal',  label:'Mammals',      classes:['mammal'] },
+    { id:'insect',  label:'Insects',      classes:['insect','arachnid'] },
+    { id:'reptile', label:'Herps',        classes:['reptile','amphibian'] },
+    { id:'aquatic', label:'Aquatic life', classes:['fish'] },
+    { id:'plant',   label:'Plants',       classes:['plant'] },
+    { id:'fungus',  label:'Fungi',        classes:['fungus','lichen'] },
+    { id:'sign',    label:'Tracks & sign',classes:['sign'] },
+    { id:'other',   label:'Other',        classes:[] }
+  ];
+  var CLASS_TO_GROUP = {};
+  (function(){
+    for(var i = 0; i < GROUPS.length; i++){
+      for(var j = 0; j < GROUPS[i].classes.length; j++){
+        CLASS_TO_GROUP[GROUPS[i].classes[j]] = GROUPS[i].id;
+      }
+    }
+  })();
+  function groupOf(entry){
+    var cls = str(entry && entry.rec && entry.rec.subject_class).toLowerCase();
+    return CLASS_TO_GROUP[cls] || 'other';
+  }
+  function groupLabel(id){
+    for(var i = 0; i < GROUPS.length; i++){ if(GROUPS[i].id === id) return GROUPS[i].label; }
+    return 'Other';
+  }
+  function speciesCount(entries){
+    var seen = {}, n = 0;
+    for(var i = 0; i < entries.length; i++){
+      var r = entries[i].rec || {};
+      if(r.identified !== true) continue;
+      var key = (str(r.scientific_name) || str(r.common_name)).toLowerCase();
+      if(!key || seen[key]) continue;
+      seen[key] = 1; n++;
+    }
+    return n;
+  }
+
+  var currentFilter = 'all';
+  var expanded = false;
+
+  function renderJournal(){
+    var wrap = $('jwrap');
+    clear(wrap);
+    var all = readJournal();
+
+    if(!all.length){
+      wrap.appendChild(el('p', 'jempty',
+        'Nothing recorded yet. Every identification is filed here by group, so a season of birds or a year of wildflowers stays together and can be read back later.'));
+      return;
+    }
+
+    var counts = {}, i;
+    for(i = 0; i < all.length; i++){
+      var g = groupOf(all[i]);
+      counts[g] = (counts[g] || 0) + 1;
+    }
+    if(currentFilter !== 'all' && !counts[currentFilter]) currentFilter = 'all';
+
+    // Filter chips, in fixed group order, showing only groups that hold records.
+    var chips = el('div', 'chips');
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', 'Filter the field journal by group');
+    function addChip(id, label, count){
+      var b = el('button', 'chip' + (currentFilter === id ? ' on' : ''));
+      b.type = 'button';
+      b.setAttribute('aria-pressed', currentFilter === id ? 'true' : 'false');
+      b.appendChild(document.createTextNode(label));
+      b.appendChild(el('span', 'cn', count));
+      b.addEventListener('click', function(){
+        currentFilter = id;
+        expanded = false;
+        lsSet(K_FILTER, id);
+        renderJournal();
+      });
+      chips.appendChild(b);
+    }
+    addChip('all', 'All', all.length);
+    for(i = 0; i < GROUPS.length; i++){
+      if(counts[GROUPS[i].id]) addChip(GROUPS[i].id, GROUPS[i].label, counts[GROUPS[i].id]);
+    }
+    wrap.appendChild(chips);
+
+    var shown = [];
+    for(i = 0; i < all.length; i++){
+      if(currentFilter === 'all' || groupOf(all[i]) === currentFilter) shown.push(all[i]);
+    }
+
+    // A life list wants two numbers: how often you looked, and how many species you actually found.
+    var sp = speciesCount(shown);
+    var meta = el('p', 'jmeta');
+    meta.appendChild(el('b', null, shown.length));
+    meta.appendChild(document.createTextNode(shown.length === 1 ? ' record' : ' records'));
+    if(sp){
+      meta.appendChild(document.createTextNode('  /  '));
+      meta.appendChild(el('b', null, sp));
+      meta.appendChild(document.createTextNode(sp === 1 ? ' species named' : ' species named'));
+    }
+    if(currentFilter === 'all'){
+      var gcount = 0;
+      for(var kk in counts){ if(Object.prototype.hasOwnProperty.call(counts, kk)) gcount++; }
+      meta.appendChild(document.createTextNode('  /  across '));
+      meta.appendChild(el('b', null, gcount));
+      meta.appendChild(document.createTextNode(gcount === 1 ? ' group' : ' groups'));
+    }
+    wrap.appendChild(meta);
+
+    var visible = expanded ? shown : shown.slice(0, PAGE_SIZE);
+    var grid = el('div', 'jgrid');
+    for(i = 0; i < visible.length; i++){
+      (function(entry){
+        var card = el('button', 'jcard');
+        card.type = 'button';
+        var im = el('img');
+        im.src = entry.thumb;
+        im.alt = '';
+        card.appendChild(im);
+        var b = el('div', 'jb');
+        if(currentFilter === 'all') b.appendChild(el('div', 'jg', groupLabel(groupOf(entry))));
+        b.appendChild(el('div', 'jn', str(entry.rec && entry.rec.common_name) || 'Not identified'));
+        var d = el('div', 'jd');
+        var dot = el('span', 'jh');
+        var lvl = (entry.rec && entry.rec.hazard && entry.rec.hazard.level) || 'none';
+        dot.style.background = HAZ_DOT[lvl] || HAZ_DOT.none;
+        d.appendChild(dot);
+        d.appendChild(document.createTextNode(entry.accession));
+        b.appendChild(d);
+        card.appendChild(b);
+        card.addEventListener('click', function(){
+          showSheet(entry);
+          window.scrollTo(0, 0);
+        });
+        grid.appendChild(card);
+      })(visible[i]);
+    }
+    wrap.appendChild(grid);
+
+    var foot = el('div', 'jfoot');
+    if(shown.length > visible.length){
+      var more = el('button', 'btn ghost', 'Show all ' + shown.length);
+      more.addEventListener('click', function(){ expanded = true; renderJournal(); });
+      foot.appendChild(more);
+    }
+
+    var scopeLabel = currentFilter === 'all'
+      ? 'Clear the journal'
+      : 'Clear the ' + groupLabel(currentFilter).toLowerCase() + ' records';
+    var clearBtn = el('button', 'btn ghost', scopeLabel);
+    var armed = false, timer = null;
+    clearBtn.addEventListener('click', function(){
+      if(!armed){
+        armed = true;
+        clearBtn.textContent = 'Tap again to erase ' + shown.length +
+          (shown.length === 1 ? ' record' : ' records');
+        timer = setTimeout(function(){ armed = false; clearBtn.textContent = scopeLabel; }, 4000);
+        return;
+      }
+      if(timer) clearTimeout(timer);
+      if(currentFilter === 'all'){
+        lsDel(K_JOURNAL);
+      } else {
+        var keep = [], q;
+        var src = readJournal();
+        for(q = 0; q < src.length; q++){
+          if(groupOf(src[q]) !== currentFilter) keep.push(src[q]);
+        }
+        writeJournal(keep);
+        currentFilter = 'all';
+        lsSet(K_FILTER, 'all');
+      }
+      expanded = false;
+      clear($('result'));
+      renderJournal();
+    });
+    foot.appendChild(clearBtn);
+    foot.appendChild(el('span', 'jempty',
+      all.length + ' of ' + MAX_JOURNAL + ' slots used. The oldest record drops off when it fills.'));
+    wrap.appendChild(foot);
+  }
+
+  function removeEntry(entry){
+    var src = readJournal(), keep = [], i;
+    for(i = 0; i < src.length; i++){
+      if(src[i].accession !== entry.accession) keep.push(src[i]);
+    }
+    writeJournal(keep);
+    clear($('result'));
+    renderJournal();
+  }
+
+  function showSheet(entry){
+    // Safety hedging is re-applied on every render rather than trusted from
+    // storage, so a record written by an older build still warns correctly.
+    var safe = {};
+    for(var k in entry){ if(Object.prototype.hasOwnProperty.call(entry, k)) safe[k] = entry[k]; }
+    safe.rec = normalize(entry.rec);
+    var host = $('result');
+    clear(host);
+    host.appendChild(renderSheet(safe));
+  }
+
+  /* ---------- interaction ---------- */
+  var stagedFile = null;
+  var busy = false;
+
+  function setStatus(msg){
+    var s = $('status');
+    if(!msg){ s.style.display = 'none'; s.textContent = ''; return; }
+    s.style.display = 'block';
+    s.textContent = msg;
+  }
+  function setError(title, msg){
+    var e = $('err');
+    clear(e);
+    if(!title){ e.style.display = 'none'; return; }
+    e.appendChild(el('strong', null, title));
+    e.appendChild(document.createTextNode(msg));
+    e.style.display = 'block';
+  }
+  function reset(){
+    stagedFile = null;
+    $('staged').className = 'staged';
+    $('preview').removeAttribute('src');
+    $('file').value = '';
+    setStatus('');
+    setError(null);
+    clear($('result'));
+  }
+
+  function acceptFile(file){
+    if(!file) return;
+    if(file.type && file.type.indexOf('image/') !== 0 && !/\.(hei[cf]|jpe?g|png|webp|gif)$/i.test(file.name || '')){
+      setError('Wrong file type', 'That is not an image. Pick a photograph instead.');
+      return;
+    }
+    setError(null);
+    stagedFile = file;
+    decodeImage(file).then(function(src){
+      $('preview').src = toJpeg(src, 600, 0.8);
+      $('staged').className = 'staged on';
+    }, function(){
+      setError('Could not open that photo',
+        'The browser could not decode the file. If it came off an iPhone as HEIC, open it in Photos and share it as a JPEG, then try again.');
+    });
+  }
+
+  function run(){
+    if(busy) return;
+    var key = lsGet(K_KEY, '').trim();
+    if(!key){
+      openModal();
+      setError('No API key saved', 'Add your Anthropic API key in Settings, then identify the specimen.');
+      return;
+    }
+    if(!stagedFile){
+      setError('No photo staged', 'Add a photograph first.');
+      return;
+    }
+    busy = true;
+    setError(null);
+    $('run').disabled = true;
+    $('dev').style.display = 'block';
+    setStatus('Reading the photograph...');
+
+    var kind = $('kind').value;
+    var loc = $('loc').value.trim();
+    var notes = $('notes').value.trim();
+    var full, thumb;
+
+    decodeImage(stagedFile).then(function(src){
+      full = toJpeg(src, MAX_EDGE, 0.85);
+      thumb = toJpeg(src, THUMB_EDGE, 0.62);
+      setStatus('Comparing against look-alikes and checking hazards...');
+      return callClaude(key, stripPrefix(full), kind, loc, notes);
+    }).then(function(raw){
+      var rec = normalize(raw);
+      var now = new Date();
+      var entry = {
+        accession: nextAccession(),
+        rec: rec,
+        thumb: thumb,
+        loc: loc,
+        session: lsGet(K_SESS, '').trim(),
+        dateLabel: now.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }),
+        ts: now.getTime()
+      };
+      var j = readJournal();
+      j.unshift(entry);
+      writeJournal(j);
+      currentFilter = groupOf(entry);
+      expanded = false;
+      lsSet(K_FILTER, currentFilter);
+      renderJournal();
+      showSheet(entry);
+      setStatus('');
+      $('dev').style.display = 'none';
+      $('run').disabled = false;
+      busy = false;
+      var host = $('result');
+      if(host.firstChild && host.firstChild.scrollIntoView) host.firstChild.scrollIntoView({ block:'start' });
+    }).catch(function(e){
+      $('dev').style.display = 'none';
+      $('run').disabled = false;
+      busy = false;
+      setStatus('');
+      var s = e && e.status;
+      if(s === 401 || s === 403){
+        setError('The key was rejected', 'Anthropic did not accept that API key. Open Settings and check it, then try again.');
+      } else if(s === 429){
+        setError('Rate limited', 'Your account has hit its request limit. Wait a moment and identify again.');
+      } else if(s === 529 || s === 503){
+        setError('Anthropic is overloaded', 'The service is busy right now. Try the same photo again in a minute.');
+      } else if(s === 400){
+        setError('The request was refused', (e.message || 'The image may be too large or in a format the API cannot read.'));
+      } else if(e && e.message === 'decode'){
+        setError('Could not open that photo', 'The browser could not decode the file. Export it as a JPEG and try again.');
+      } else if(e instanceof SyntaxError){
+        setError('The reply came back malformed', 'Claude returned something that was not a clean record. Identify again; it usually settles on the second pass.');
+      } else {
+        setError('Identification failed', (e && e.message) ? e.message : 'Something went wrong reaching the API. Check your connection and try again.');
+      }
+    });
+  }
+
+  /* ---------- settings modal ---------- */
+  function openModal(){
+    $('key').value = lsGet(K_KEY, '');
+    $('sess').value = lsGet(K_SESS, '');
+    $('modal').className = 'modal on';
+    $('key').focus();
+  }
+  function closeModal(){ $('modal').className = 'modal'; }
+
+  /* ---------- wiring ---------- */
+  function init(){
+    $('pick').addEventListener('click', function(){ $('file').click(); });
+    $('replace').addEventListener('click', function(){ $('file').click(); });
+    $('file').addEventListener('change', function(){
+      if(this.files && this.files[0]) acceptFile(this.files[0]);
+    });
+
+    var drop = $('drop');
+    ['dragenter','dragover'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.className = 'drop hot'; });
+    });
+    ['dragleave','drop'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.className = 'drop'; });
+    });
+    drop.addEventListener('drop', function(e){
+      if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) acceptFile(e.dataTransfer.files[0]);
+    });
+
+    $('run').addEventListener('click', run);
+    $('gear').addEventListener('click', openModal);
+    $('close').addEventListener('click', closeModal);
+    $('save').addEventListener('click', function(){
+      lsSet(K_KEY, $('key').value.trim());
+      lsSet(K_SESS, $('sess').value.trim());
+      closeModal();
+      setError(null);
+    });
+    $('modal').addEventListener('click', function(e){ if(e.target === $('modal')) closeModal(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && $('modal').className.indexOf('on') >= 0) closeModal();
+    });
+
+    var savedFilter = lsGet(K_FILTER, 'all');
+    var known = { all:1 };
+    for(var gi = 0; gi < GROUPS.length; gi++) known[GROUPS[gi].id] = 1;
+    currentFilter = known[savedFilter] ? savedFilter : 'all';
+
+    renderJournal();
+    if(!lsGet(K_KEY, '')) $('dropmsg').textContent =
+      'Take a photo, choose one from your library, or drop a file here. You will need an Anthropic API key in Settings before the first identification.';
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  window.__fm = {
+    normalize: normalize,
+    groupOf: groupOf,
+    groupLabel: groupLabel,
+    speciesCount: speciesCount,
+    MAX_JOURNAL: MAX_JOURNAL,
+    hazardTitle: hazardTitle,
+    plainText: plainText,
+    readJournal: readJournal,
+    writeJournal: writeJournal,
+    nextAccession: nextAccession,
+    CLAUDE_MODEL: CLAUDE_MODEL
+  };
+})();
+</script>
+</body>
+</html>
