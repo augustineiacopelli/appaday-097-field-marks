@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="manifest" href="https://augustineiacopelli.github.io/appaday/manifests/097.webmanifest">
 <script src="https://augustineiacopelli.github.io/appaday/save.js" defer></script>
+<script src="https://augustineiacopelli.github.io/appaday/keys.js" data-app="097" data-legacy-key="fieldmarks-key" data-accent="#1F7A8C" defer></script>
 <title>Field Marks | AppADay 097</title>
 <meta name="description" content="Photograph a bird, animal, insect, or plant and get a structured field identification: diagnostic marks, look-alikes, hazards, invasive status, and plant health notes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -435,11 +436,7 @@
   <div class="mbox">
     <h2 id="mtitle">Settings</h2>
     <p class="mhint">Your key stays in this browser and is sent only to Anthropic. It is never stored anywhere else.</p>
-    <div class="fieldrow">
-      <label class="fl" for="key">Anthropic API key</label>
-      <input type="text" id="key" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
-      <p class="helper">Create one at console.anthropic.com under API Keys.</p>
-    </div>
+    <div class="fieldrow" id="keyMount"><p class="helper">The key manager is loading. If this stays, check your connection and reload.</p></div>
     <div class="fieldrow">
       <label class="fl" for="sess">Field session name</label>
       <input type="text" id="sess" placeholder="Chisholm Creek, August" autocomplete="off">
@@ -458,7 +455,6 @@
 
   var CLAUDE_MODEL = 'claude-sonnet-5';
   var API_URL = 'https://api.anthropic.com/v1/messages';
-  var K_KEY = 'fieldmarks-key';
   var K_SESS = 'fieldmarks-session';
   var K_JOURNAL = 'fieldmarks-journal';
   var K_SEQ = 'fieldmarks-seq';
@@ -1293,18 +1289,22 @@
     });
   }
 
-  function run(){
+  async function run(){
     if(busy) return;
-    var key = lsGet(K_KEY, '').trim();
-    if(!key){
-      openModal();
-      setError('No API key saved', 'Add your Anthropic API key in Settings, then identify the specimen.');
-      return;
-    }
     if(!stagedFile){
       setError('No photo staged', 'Add a photograph first.');
       return;
     }
+    if(!window.AppKeys){
+      setError('Key manager did not load', 'Check your connection and reload the page.');
+      return;
+    }
+    var key = await window.AppKeys.get();
+    if(!key){
+      setError('No API key saved', 'Add your Claude API key with the gear button, then identify the specimen.');
+      return;
+    }
+    if(busy) return;
     busy = true;
     setError(null);
     $('run').disabled = true;
@@ -1373,10 +1373,9 @@
 
   /* ---------- settings modal ---------- */
   function openModal(){
-    $('key').value = lsGet(K_KEY, '');
+    if(window.AppKeys) window.AppKeys.mountSettings($('keyMount'));
     $('sess').value = lsGet(K_SESS, '');
     $('modal').className = 'modal on';
-    $('key').focus();
   }
   function closeModal(){ $('modal').className = 'modal'; }
 
@@ -1403,7 +1402,6 @@
     $('gear').addEventListener('click', openModal);
     $('close').addEventListener('click', closeModal);
     $('save').addEventListener('click', function(){
-      lsSet(K_KEY, $('key').value.trim());
       lsSet(K_SESS, $('sess').value.trim());
       closeModal();
       setError(null);
@@ -1419,8 +1417,8 @@
     currentFilter = known[savedFilter] ? savedFilter : 'all';
 
     renderJournal();
-    if(!lsGet(K_KEY, '')) $('dropmsg').textContent =
-      'Take a photo, choose one from your library, or drop a file here. You will need an Anthropic API key in Settings before the first identification.';
+    if(!(window.AppKeys && window.AppKeys.has())) $('dropmsg').textContent =
+      'Take a photo, choose one from your library, or drop a file here. You will need a Claude API key (the gear button) before the first identification.';
   }
 
   if(document.readyState === 'loading'){
