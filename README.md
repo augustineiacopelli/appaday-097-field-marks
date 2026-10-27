@@ -58,7 +58,7 @@ Photographs are never uploaded anywhere except to the Anthropic API for the iden
 
 A single self-contained file of vanilla HTML, CSS, and JavaScript. No frameworks, no build step, no dependencies beyond Google Fonts. Newsreader carries the binomials in true italic, Karla handles the interface, IBM Plex Mono handles the taxonomy and the specimen tags. The result is laid out as a herbarium mounting sheet: warm bone paper on wet slate green, the photograph mounted with an accession stamp, the ranks set as a ruled ladder, and a specimen tag along the bottom carrying accession number, session, locality, and date.
 
-Model: `claude-sonnet-5`, called directly from the browser.
+Model: the current Claude Sonnet model, called directly from the browser.
 
 ## Disclaimer
 

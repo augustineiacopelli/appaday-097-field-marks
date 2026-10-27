@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="manifest" href="https://augustineiacopelli.github.io/appaday/manifests/097.webmanifest">
 <script src="https://augustineiacopelli.github.io/appaday/save.js" defer></script>
+<script src="https://augustineiacopelli.github.io/appaday/models.js"></script>
 <script src="https://augustineiacopelli.github.io/appaday/keys.js" data-app="097" data-legacy-key="fieldmarks-key" data-accent="#1F7A8C" defer></script>
 <title>Field Marks | AppADay 097</title>
 <meta name="description" content="Photograph a bird, animal, insect, or plant and get a structured field identification: diagnostic marks, look-alikes, hazards, invasive status, and plant health notes.">
@@ -453,7 +454,7 @@
 (function(){
   "use strict";
 
-  var CLAUDE_MODEL = 'claude-sonnet-5';
+  var CLAUDE_MODEL = (window.AppModels ? window.AppModels.id('sonnet') : '');
   var API_URL = 'https://api.anthropic.com/v1/messages';
   var K_SESS = 'fieldmarks-session';
   var K_JOURNAL = 'fieldmarks-journal';
@@ -1442,15 +1443,6 @@
   };
 })();
 
-async function getModel(tier = 'sonnet') {
-  try {
-    const response = await fetch('../config.json');
-    const config = await response.json();
-    return config.models[tier];
-  } catch {
-    return 'claude-sonnet-5-5';
-  }
-}
 </script>
 </body>
 </html>
